@@ -2,6 +2,22 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import "./styles.css";
 
 type Lang = "ru" | "en";
+
+type Page = "home" | "privacy";
+
+const readRoute = () => {
+  const parts = window.location.hash.replace(/^#\/?/, "").split("/");
+
+  const lang: Lang = parts[0] === "en" ? "en" : "ru";
+  const route = parts[0] === "en" || parts[0] === "ru" ? parts[1] : parts[0];
+
+  return {
+    lang,
+    page: (route === "privacy" ? "privacy" : "home") as Page,
+    support: route === "support",
+  };
+};
+
 const copy = {
   ru: {
     home: "Главная",
@@ -89,14 +105,12 @@ const services = [
 ];
 
 export default function App() {
-  const [lang, setLang] = useState<Lang>("ru");
+  const [lang, setLang] = useState<Lang>(() => readRoute().lang);
   const [supportOpen, setSupportOpen] = useState(false);
   const [topic, setTopic] = useState("bug");
   const [topicOpen, setTopicOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [page, setPage] = useState(
-    window.location.hash === "#/privacy" ? "privacy" : "home",
-  );
+  const [page, setPage] = useState<Page>(() => readRoute().page);
   const supportReturnHash = useRef("#/home");
   const supportScrollY = useRef(0);
   const previousHash = useRef(window.location.hash);
@@ -105,11 +119,8 @@ export default function App() {
   const t = copy[lang];
   const openSupport = () => {
     supportScrollY.current = window.scrollY;
-
-    supportReturnHash.current =
-      window.location.hash === "#/privacy" ? "#/privacy" : "#/home";
-
-    window.location.hash = "#/support";
+    supportReturnHash.current = `#/${lang}/${page}`;
+    window.location.hash = `#/${lang}/support`;
   };
 
   const closeSupport = () => {
@@ -138,21 +149,23 @@ export default function App() {
   useEffect(() => {
     const onHash = () => {
       const hash = window.location.hash;
+      const route = readRoute();
+      const wasSupport = previousHash.current.endsWith("/support");
 
-      if (hash === "#/privacy") {
-        setPage("privacy");
-      } else if (hash === "#/home") {
-        setPage("home");
+      setLang(route.lang);
+
+      if (!route.support) {
+        setPage(route.page);
       }
 
-      setSupportOpen(hash === "#/support");
+      setSupportOpen(route.support);
       setTopicOpen(false);
 
-      if (previousHash.current === "#/support") {
+      if (wasSupport && !route.support) {
         requestAnimationFrame(() => {
           window.scrollTo(0, supportScrollY.current);
         });
-      } else if (hash !== "#/support") {
+      } else if (!route.support && previousHash.current !== hash) {
         window.scrollTo(0, 0);
       }
 
@@ -225,7 +238,7 @@ export default function App() {
   return (
     <div className="site" id="home">
       <header className="header shell">
-        <a className="brand" href="#/home" aria-label="SubWatch home">
+        <a className="brand" href={`#/${lang}/home`} aria-label="SubWatch home">
           <img
             src={`${import.meta.env.BASE_URL}icon-128.png`}
             className="brand-logo"
@@ -238,7 +251,12 @@ export default function App() {
             <button
               type="button"
               className={lang === "ru" ? "active" : ""}
-              onClick={() => setLang("ru")}
+              onClick={() => {
+                if (supportOpen) {
+                  supportReturnHash.current = `#/ru/${page}`;
+                }
+                window.location.hash = `#/ru/${supportOpen ? "support" : page}`;
+              }}
               aria-pressed={lang === "ru"}
             >
               RU
@@ -247,7 +265,12 @@ export default function App() {
             <button
               type="button"
               className={lang === "en" ? "active" : ""}
-              onClick={() => setLang("en")}
+              onClick={() => {
+                if (supportOpen) {
+                  supportReturnHash.current = `#/en/${page}`;
+                }
+                window.location.hash = `#/en/${supportOpen ? "support" : page}`;
+              }}
               aria-pressed={lang === "en"}
             >
               EN
@@ -351,7 +374,7 @@ export default function App() {
           <button type="button" onClick={openSupport}>
             {t.support}
           </button>
-          <a href="#/privacy">{t.privacy}</a>
+          <a href={`#/${lang}/privacy`}>{t.privacy}</a>
         </div>
       </footer>
       {supportOpen && (
@@ -496,7 +519,7 @@ function Privacy({ lang }: { lang: Lang }) {
   const ru = lang === "ru";
   return (
     <main className="privacy-page shell">
-      <a className="back-link" href="#/home">
+      <a className="back-link" href={`#/${lang}/home`}>
         ← {ru ? "На главную" : "Back to home"}
       </a>
       <h1>{ru ? "Политика конфиденциальности" : "Privacy Policy"}</h1>
