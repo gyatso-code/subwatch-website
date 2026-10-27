@@ -8,8 +8,15 @@ type Page = "home" | "privacy";
 const readRoute = () => {
   const parts = window.location.hash.replace(/^#\/?/, "").split("/");
 
-  const lang: Lang = parts[0] === "en" ? "en" : "ru";
-  const route = parts[0] === "en" || parts[0] === "ru" ? parts[1] : parts[0];
+  const hasLanguage = parts[0] === "ru" || parts[0] === "en";
+
+  const browserLang: Lang = navigator.language.toLowerCase().startsWith("ru")
+    ? "ru"
+    : "en";
+
+  const lang: Lang = hasLanguage ? (parts[0] as Lang) : browserLang;
+
+  const route = hasLanguage ? parts[1] : parts[0];
 
   return {
     lang,
