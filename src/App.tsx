@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import "./styles.css";
 
+const STORE_URL =
+  "https://chromewebstore.google.com/detail/subwatch/nlgmolmddefnkdbmnimaggggidgcdldf";
+
 type Lang = "ru" | "en";
 
 type Page = "home" | "privacy";
@@ -36,7 +39,6 @@ const copy = {
     second: "Без хаоса.",
     description:
       "Все регулярные расходы в одном месте. Добавляй подписки, следи за платежами и получай напоминания до списания.",
-    coming: "Скоро в Chrome Web Store",
     alt: "Настоящий экран расширения SubWatch",
   },
   en: {
@@ -49,7 +51,6 @@ const copy = {
     second: "No chaos.",
     description:
       "All recurring expenses in one place. Add subscriptions, track payments and get reminders before renewals.",
-    coming: "Coming soon on Chrome Web Store",
     alt: "Real SubWatch extension interface",
   },
 };
@@ -283,9 +284,14 @@ export default function App() {
               EN
             </button>
           </div>
-          <span className="header-install" title={t.coming}>
+          <a
+            className="header-install"
+            href={STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {t.install}
-          </span>
+          </a>
         </div>
       </header>
 
@@ -302,7 +308,12 @@ export default function App() {
             <p className="hero-description">{t.description}</p>
             <div className="hero-buttons">
               <div className="install-group">
-                <span className="primary-cta" title={t.coming}>
+                <a
+                  className="primary-cta"
+                  href={STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <svg
                     aria-hidden="true"
                     viewBox="0 0 24 24"
@@ -318,8 +329,7 @@ export default function App() {
                     <path d="M4 17v3h16v-3" />
                   </svg>
                   {t.install}
-                </span>
-                <span className="install-caption">{t.coming}</span>
+                </a>
               </div>
             </div>
           </div>

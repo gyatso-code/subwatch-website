@@ -1376,3 +1376,33 @@ button {
     animation: none;
   }
 }
+
+/* Кнопки установки SubWatch */
+.header-install,
+.primary-cta {
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Наведение */
+.header-install:hover,
+.primary-cta:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 8px 24px rgba(136, 92, 246, 0.3);
+}
+
+/* Нажатие */
+.header-install:active,
+.primary-cta:active {
+  filter: brightness(0.95);
+}
+
+/* Фокус с клавиатуры */
+.header-install:focus-visible,
+.primary-cta:focus-visible {
+  outline: 2px solid #c4a8fd;
+  outline-offset: 4px;
+}
