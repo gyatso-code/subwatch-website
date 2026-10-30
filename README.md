@@ -5,7 +5,7 @@
 
 <br/>
 
-<img src="./public/preview.png" width="100%" alt="SubWatch Website Preview"/>
+ width="100%" alt="SubWatch Website Preview"/>
 
 <br/><br/>
 
