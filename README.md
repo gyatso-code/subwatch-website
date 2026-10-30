@@ -3,10 +3,6 @@
 
 # SubWatch
 
-**Subscriptions. No chaos.**
-
-A simple browser extension to track subscriptions, manage recurring expenses and get payment reminders.
-
 <br/>
 
 <img src="./public/preview.png" width="100%" alt="SubWatch Website Preview"/>
